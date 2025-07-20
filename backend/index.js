@@ -16,12 +16,12 @@ app.use(express.json());
 // ===============================
 // Connection 1: Attendance System
 // ===============================
-const attendanceDb = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "a1b2c345678#",
-  database: "attendance_system"
-});
+const attendence_Db= mysql.connector.connect(
+    host="localhost",
+    user="your_user_here",
+    password="your_password_here",
+    database="edumonitor"
+)
 
 attendanceDb.connect((err) => {
   if (err) {
@@ -52,12 +52,13 @@ app.get("/attendance", (req, res) => {
 // Connection Pool: Cheating System
 // ===============================
 app.get("/cheating-incidents", (req, res) => {
-  const examDb = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "a1b2c345678#",
-    database: "ExamMonitoringSystem"
-  });
+const examDb = mysql.connector.connect(
+    host="localhost",
+    user="your_user_here",
+    password="your_password_here",
+    database="edumonitor"
+)
+
 
   const query = `
     SELECT ci.*, s.first_name, s.last_name 
@@ -81,13 +82,13 @@ app.get("/cheating-incidents", (req, res) => {
 // ===============================
 // Connection Pool: Emotion System
 // ===============================
-const emotionDb = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "a1b2c345678#",
-  database: "student_emotions_db",
-  connectionLimit: 10,
-});
+const emotionDb = mysql.connector.connect(
+    host="localhost",
+    user="your_user_here",
+    password="your_password_here",
+    database="edumonitor"
+)
+
 
 // Emotion summary route
 app.get("/emotion-summary", (req, res) => {
@@ -125,13 +126,13 @@ app.get("/emotion-summary", (req, res) => {
 // ===============================
 // Connection Pool: Login System
 // ===============================
-const loginDb = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "a1b2c345678#",
-  database: "student_monitoring",
-  connectionLimit: 10,
-});
+const loginDb = mysql.connector.connect(
+    host="localhost",
+    user="your_user_here",
+    password="your_password_here",
+    database="edumonitor"
+)
+
 
 // Login route
 app.post("/login", (req, res) => {
@@ -172,12 +173,13 @@ app.get("/attention-score/:studentId", (req, res) => {
 
   console.log(`📊 Fetching attention score for student: ${studentId}`);
 
-  const attentionDb = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "a1b2c345678#",
-    database: "student_attention_monitoring"
-  });
+const attentionDb = mysql.connector.connect(
+    host="localhost",
+    user="your_user_here",
+    password="your_password_here",
+    database="edumonitor"
+)
+
 
   attentionDb.connect(err => {
     if (err) {
