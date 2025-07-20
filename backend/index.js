@@ -1,3 +1,6 @@
+
+# Replace 'your_user_here' and 'your_password_here' with your actual MySQL credentials before running locally.
+
 const express = require("express");
 const cors = require("cors");
 const mysql = require("mysql");
