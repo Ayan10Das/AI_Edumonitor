@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduMonitor.AI Dashboard</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(100deg, white, rgb(74, 164, 242));
+      scroll-behavior: smooth;
+    }
+
+    .sidebar {
+      height: 100vh;
+      width: 220px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #1e1e2f;
+      padding-top: 20px;
+      color: white;
+      z-index: 1000;
+    }
+
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 14px 20px;
+      text-decoration: none;
+      transition: 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #5757a3;
+    }
+
+    .main {
+      margin-left: 240px;
+      padding: 20px;
+    }
+
+    .header {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      transition: transform 0.5s ease, box-shadow 0.5s ease;
+    }
+
+    .highlighted {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 123, 255, 0.6);
+      animation: popEffect 0.6s ease;
+      z-index: 10;
+    }
+
+    @keyframes popEffect {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.08);
+      }
+
+      100% {
+        transform: scale(1.05);
+      }
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 30px;
+      color: #444141;
+    }
+
+    section {
+      margin-bottom: 40px;
+    }
+
+    /* Attention Score Styles */
+    #score-bar {
+      background: #ccc;
+      height: 30px;
+      border-radius: 15px;
+      overflow: hidden;
+      margin-top: 15px;
+    }
+
+    #score-fill {
+      height: 100%;
+      width: 0%;
+      background: #28a745;
+      text-align: center;
+      color: white;
+      line-height: 30px;
+      transition: width 0.6s ease-in-out;
+    }
+
+    /* New styles for student input */
+    #student-name {
+      padding: 8px;
+      width: 100%;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    #student-name:focus {
+      outline: none;
+      border-color: #4CAF50;
+      box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
+    }
+
+    .get-attention-btn {
+      width: 100%;
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .get-attention-btn:hover {
+      background-color: #45a049;
+    }
+
+    .score-info {
+      margin-top: 15px;
+      padding-top: 10px;
+      border-top: 1px solid #eee;
+      font-size: 0.9em;
+      color: #555;
+    }
+
+    .score-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="sidebar">
+    <h2>EduMonitor.AI</h2>
+    <a href="#dashboard-header">Dashboard</a>
+    <a href="#live-emotion">Live Emotion</a>
+    <a href="#attention-tracking">Attention Tracking</a>
+    <a href="#cheating-detection">Cheating Detection</a>
+    <a href="#face-attendance">Face Attendance</a>
+    <a href="#attention-score">Attention Score</a>
+    <a href="#profile">Profile</a>
+    <a href="#settings">Settings</a>
+    <a href="login.html">Logout</a>
+  </div>
+
+  <div class="main">
+    <div id="dashboard-header" class="header">
+      <h2>Welcome, Admin</h2>
+      <p>Status: <span class="status">Active</span></p>
+    </div>
+
+    <section id="live-emotion">
+      <div class="card">
+        <h3>Live Emotion</h3>
+        <p>Happy😁: <span id="happy" class="status">--%</span></p>
+        <p>Sad🥲: <span id="sad" class="status">--%</span></p>
+        <p>Angry😤: <span id="angry" class="status">--%</span></p>
+        <p>Neutral😊: <span id="neutral" class="status">--%</span></p>
+        <p>Scared😱: <span id="scared" class="status">--%</span></p>
+        <p>Disgust🤢: <span id="disgust" class="status">--%</span></p>
+        <p>Surprise😲: <span id="surprise" class="status">--%</span></p>
+        <p>Last Updated: <span id="emotion-last-updated" class="status">---</span></p>
+      </div>
+    </section>
+
+
+    <section id="cheating-detection">
+      <div class="card">
+        <h3>Recent Cheating Incidents</h3>
+        <div id="cheating-incidents" style="max-height: 300px; overflow-y: auto;">
+          <p>Loading incidents...</p>
+        </div>
+        <button onclick="loadCheatingIncidents()"
+          style="width: 100%; padding: 8px; margin-top: 10px; background-color: #e74c3c; color: white; border: none; border-radius: 6px;">
+          Refresh Incidents
+        </button>
+      </div>
+    </section>
+
+    <section id="face-attendance">
+      <div class="card">
+        <h3>Face Attendance System</h3>
+        <label for="attendance-date"><strong>Select Date:</strong></label>
+        <input type="date" id="attendance-date" name="attendance-date"
+          style="padding: 6px; width: 100%; margin-top: 8px; margin-bottom: 10px;" />
+        <button onclick="loadAttendance()"
+          style="width: 100%; padding: 8px; background-color: #3498db; color: white; border: none; border-radius: 6px;">Load
+          Attendance</button>
+        <ul id="attendance-list" style="margin-top: 15px; padding-left: 20px;"></ul>
+      </div>
+    </section>
+
+    <!-- Updated Attention Score Section -->
+    <section id="attention-score">
+      <div class="card">
+        <h3>Student Attention Score</h3>
+        
+        <label for="student-name"><strong>Enter Student Name:</strong></label>
+        <input type="text" id="student-name" placeholder="e.g. ayan">
+        <button class="get-attention-btn" onclick="loadAttentionScore()">
+          Get Attention Data
+        </button>
+        
+        <div id="score-bar">
+          <div id="score-fill">0%</div>
+        </div>
+        
+        <div class="score-info"></div>
+      </div>
+    </section>
+
+    <section id="profile">
+      <div class="card">
+        <h3>Profile</h3>
+        <p>Profile features coming soon...</p>
+      </div>
+    </section>
+
+    <section id="settings">
+      <div class="card">
+        <h3>Settings</h3>
+        <p>Settings features coming soon...</p>
+      </div>
+    </section>
+
+    <div class="footer">
+      <p>© 2025 EduMonitor.AI - All rights reserved.</p>
+    </div>
+  </div>
+
+  <script>
+    async function loadAttendance() {
+      const selectedDate = document.getElementById("attendance-date").value;
+      const attendanceList = document.getElementById("attendance-list");
+      attendanceList.innerHTML = "";
+
+      if (!selectedDate) {
+        attendanceList.innerHTML = "<li>Please select a date.</li>";
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3000/attendance?date=${selectedDate}`);
+        const data = await response.json();
+
+        if (data.length === 0) {
+          attendanceList.innerHTML = "<li>No records found for this date.</li>";
+          return;
+        }
+
+        data.forEach(entry => {
+          const li = document.createElement("li");
+          li.textContent = `${entry.name} - ${entry.date} ${entry.time}`;
+          attendanceList.appendChild(li);
+        });
+      } catch (error) {
+        console.error("Error loading attendance:", error);
+        attendanceList.innerHTML = "<li>Error fetching data.</li>";
+      }
+    }
+
+    async function loadEmotionSummary() {
+      try {
+        const response = await fetch(`http://localhost:3000/emotion-summary`);
+        if (!response.ok) return;
+
+        const data = await response.json();
+        document.getElementById("happy").textContent = `${data.happy_avg}%`;
+        document.getElementById("sad").textContent = `${data.sad_avg}%`;
+        document.getElementById("angry").textContent = `${data.angry_avg}%`;
+        document.getElementById("neutral").textContent = `${data.neutral_avg}%`;
+        document.getElementById("scared").textContent = `${data.scared_avg}%`;
+        document.getElementById("disgust").textContent = `${data.disgust_avg}%`;
+        document.getElementById("surprise").textContent = `${data.surprise_avg}%`;
+        document.getElementById("emotion-last-updated").textContent = data.session_date || "N/A";
+      } catch (error) {
+        console.error("Error loading emotion summary:", error);
+      }
+    }
+
+    async function loadCheatingIncidents() {
+      const container = document.getElementById("cheating-incidents");
+      container.innerHTML = "<p>Loading incidents...</p>";
+
+      try {
+        const response = await fetch("http://localhost:3000/cheating-incidents");
+        const data = await response.json();
+
+        if (data.length === 0) {
+          container.innerHTML = "<p>No cheating incidents found.</p>";
+          return;
+        }
+
+        let html = "";
+        data.forEach(incident => {
+          html += `
+            <div style="padding: 10px; border-bottom: 1px solid #eee;">
+              <p><strong>Type:</strong> ${incident.incident_type}</p>
+              <p><strong>Time:</strong> ${new Date(incident.incident_time).toLocaleString()}</p>
+              ${incident.frame_path ? `<p><strong>Evidence:</strong> <a href="${incident.frame_path}" target="_blank">View Image</a></p>` : ''}
+            </div>`;
+        });
+
+        container.innerHTML = html;
+      } catch (error) {
+        console.error("Error loading cheating incidents:", error);
+        container.innerHTML = "<p>Error loading incidents.</p>";
+      }
+    }
+
+    async function loadAttentionScore() {
+      const studentNameInput = document.getElementById("student-name");
+      const studentId = studentNameInput.value.trim();
+      
+      if (!studentId) {
+        alert("Please enter a student name");
+        return;
+      }
+
+      const fill = document.getElementById("score-fill");
+      const card = document.querySelector("#attention-score .card");
+      const infoDiv = card.querySelector(".score-info");
+      
+      // Show loading state
+      fill.style.width = "100%";
+      fill.textContent = "Loading...";
+      fill.style.backgroundColor = "#6c757d";
+      
+      try {
+        const res = await fetch(`http://localhost:3000/attention-score/${studentId}`);
+        
+        if (!res.ok) {
+          throw new Error(`Student not found or server error: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        
+        if (data.message && data.message.includes("No attention data")) {
+          // No data available for this student
+          fill.style.width = "100%";
+          fill.textContent = "No Data";
+          fill.style.backgroundColor = "#f8f9fa";
+          infoDiv.innerHTML = `<p>No attention data found for ${studentId}</p>`;
+          return;
+        }
+
+        // Update with actual data
+        const score = data.score || 0;
+        fill.style.width = `${score}%`;
+        fill.textContent = `${score}%`;
+        fill.style.backgroundColor = 
+          score < 40 ? "#dc3545" : 
+          score < 70 ? "#ffc107" : "#28a745";
+
+        // Update info display
+        infoDiv.innerHTML = `
+          <p>Student: ${studentId}</p>
+          <p>Attentive: ${data.attentive_samples || 0}/${data.total_samples || 0}</p>
+          <p>Score: ${score}%</p>
+          <p>Last updated: ${new Date().toLocaleTimeString()}</p>
+        `;
+        
+      } catch (error) {
+        console.error("Error:", error);
+        fill.style.width = "100%";
+        fill.textContent = "Error";
+        fill.style.backgroundColor = "#dc3545";
+        infoDiv.innerHTML = `<p>${error.message || "Failed to load data"}</p>`;
+      }
+    }
+
+    window.onload = () => {
+      loadEmotionSummary();
+      loadCheatingIncidents();
+      // Don't auto-load attention score now - wait for user input
+
+      const links = document.querySelectorAll(".sidebar a[href^='#']");
+      links.forEach(link => {
+        link.addEventListener("click", function (e) {
+          const targetId = this.getAttribute("href").substring(1);
+          const targetSection = document.getElementById(targetId);
+          if (targetSection) {
+            const card = targetSection.querySelector(".card");
+            if (card) {
+              card.classList.add("highlighted");
+              setTimeout(() => card.classList.remove("highlighted"), 1500);
+            }
+          }
+        });
+      });
+    };
+  </script>
+</body>
+</html>
