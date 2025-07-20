@@ -2,7 +2,7 @@
 
 **AI-Powered Smart Student Monitoring System**
 
-EduMonitor.AI is a Final Year Project developed to monitor student engagement and integrity in real time using artificial intelligence and computer vision techniques. It integrates multiple AI models to detect **student emotions**, track **attention**, and identify **cheating behaviors during exams**—all from a single dashboard.
+EduMonitor.AI is a Final Year Project developed to monitor student engagement and integrity in real time using artificial intelligence and computer vision techniques. It integrates multiple AI models to detect **student emotions**, track **attention**, and identify **cheating behaviors during online exams**—all from a single dashboard.
 
 ---
 
@@ -15,6 +15,7 @@ EduMonitor.AI aims to revolutionize digital classrooms and online examination sy
 ## 🚀 Features
 
 ### 1. **Live Face Attendance System**  
+- At first face encoding has to be done and known_faces.pkl file will be created.
 - Detects and recognizes faces using deep learning models (FaceNet/DeepFace).
 - Automatically marks attendance and logs data into a MySQL database.
 - Real-time facial verification ensures authentic presence.
@@ -22,17 +23,18 @@ EduMonitor.AI aims to revolutionize digital classrooms and online examination sy
 ### 2. **Student Emotion Detection**  
 - Detects emotions such as *happy, sad, angry, neutral, surprised* using DeepFace.
 - Helps analyze classroom mood and emotional engagement.
-- Stores emotion logs per student for review.
+- Stores emotion logs per session(for each class,total students) for review.
 
-### 3. **Attention Monitoring System**  
-- Uses head-pose estimation and gaze tracking to determine student attention.
+### 3. **Attention Monitoring System** 
+- At first face encoding has to be done and known_faces.pkl file will be created.
+- Uses head-pose estimation and gaze tracking to determine student attention., using shape_predictor.
 - If the student looks away from the screen for more than 5–10 seconds, it logs "Inattentive".
 - Calculates an overall **attention score** for each session.
 
 ### 4. **Exam Cheating Detection**  
-- Monitors multiple faces, background movement, and eye direction during exams.
+- Monitors multiple faces, background movement, and eye direction during online exams.
 - Detects suspicious behavior (looking away repeatedly, presence of another face, etc.).
-- Records cheating incidents with timestamps into the database.
+- Records cheating incidents with timestamps into the database.Stores the captured suspicious behaviour pictures in evidance file.
 
 ### 5. **Admin Dashboard**  
 - Beautifully designed dashboard built with HTML, CSS, JavaScript, and Node.js.
